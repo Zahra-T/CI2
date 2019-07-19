@@ -1,19 +1,24 @@
 package messageHandler;
 
+import com.google.gson.Gson;
+
+import Logger.Logger;
 import game.Location;
 
 public class ClientMessage{
 	ClientMessageType messageType;
-	Object info;
+	Location location;
+	transient Logger logger = Logger.getLogger();
 	
-	public ClientMessage(ClientMessageType messageType, Object info){
+	public ClientMessage() {}
+	public ClientMessage(ClientMessageType messageType, Location location){
 		this.messageType = messageType;
-		this.info = info;
+		this.location = location;
 	}
 	
 	public ClientMessage(ClientMessageType messageType, double x, double y){
 		this.messageType = messageType;
-		this.info = new Location(x, y);
+		this.location = new Location(x, y);
 	}
 	
 	public ClientMessageType getType() {
@@ -21,9 +26,11 @@ public class ClientMessage{
 	}
 
 	public Location getLocation() {
-		if(info instanceof Location) {
-			return (Location)info;
-		}
-		return null;
+			return location;
+	}
+	
+	@Override
+	public String toString() {
+		return (new Gson()).toJson(this);
 	}
 }

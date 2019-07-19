@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import Logger.Logger;
+import client.swing.GamePanel;
 import game.Location;
 import messageHandler.ClientMessage;
 import messageHandler.ServerMessage;
@@ -30,8 +31,8 @@ public class Client extends Thread{
 	int port;
 	String userName;
 	Stack <ClientMessage>clientMessages = new Stack<ClientMessage>();
-	ServerMessageHandler serverMessageHandler;
-	private transient Gson gson = new Gson();
+	ClientSender clientSender;
+	ClientReceiver clientReceiver;
 	boolean moving;
 	GamePanel gamePanel;
 	Logger logger = Logger.getLogger();
@@ -44,58 +45,21 @@ public class Client extends Thread{
 
 	@Override
 	public void run() {
-
-
 		try {
 			Socket socket = new Socket(IP, port);
-
-
-			PrintStream printer = new PrintStream(socket.getOutputStream());
-			Scanner scanner = new Scanner(socket.getInputStream());
-
+			
+			clientSender = new ClientSender(socket.getOutputStream(), clientMessages);
+			clientSender.start();
+			clientReceiver = new ClientReceiver(socket.getInputStream(), this);
+			clientReceiver.start();
+			
+			moving = true;
 			System.out.println("client connected");
-
-			//		printer.println(userName);
-			while(true) {
-
-				synchronized(clientMessages) {
-					if(!clientMessages.isEmpty()) {
-						logger.debug("client sent");
-						String message = gson.toJson(clientMessages, new TypeToken<Stack<ClientMessage>>(){}.getType());
-						printer.println(message);
-						printer.flush();
-						logger.debug("client flushed");
-						clientMessages.clear();
-					}
-				}
-				if(scanner.hasNext()) {
-					logger.debug(scanner.nextLine());
-					logger.debug(scanner.hasNext()+"");
-				}
-				
-
-				//				if(scanner.hasNext()) {
-//					String message = scanner.nextLine();
-//					logger.debug(message);
-//
-//
-//					logger.debug("in client loop:"+message);
-//					Stack<ServerMessage> messages = gson.fromJson(message, new TypeToken<Stack<ServerMessage>>() {}.getType());
-//					gamePanel.paint(messages);
-//				}
-
-				try {
-					Thread.sleep(30);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-			}
-
+			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
+		
 	}	
 
 	public void addGamePanel(GamePanel gamePanel) {
@@ -103,10 +67,13 @@ public class Client extends Thread{
 	}
 
 	public void addMessage(ClientMessage message) {
-		logger.debug("message added");
 		synchronized(clientMessages) {
 			clientMessages.add(message);
 		}
+	}
+	
+	public void paint(Stack <ServerMessage> messages) {
+		gamePanel.paint(messages);
 	}
 
 	public boolean isMoving() {

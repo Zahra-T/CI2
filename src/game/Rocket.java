@@ -8,10 +8,12 @@ public class Rocket {
 	Location location;
 	ObjectType type;
 	
+	public Rocket() {}
 	public Rocket(int ID, int gamerID) {
 		this.ID = ID;
 		this.gamerID = gamerID;
 		this.type = ObjectType.ROCKET;
+		this.location = new Location(960, 515);
 	}
 	
 	boolean mousePressed = false;
@@ -32,7 +34,7 @@ public class Rocket {
 	}
 	
 	public Location getLocation() {
-		return location;
+		return this.location;
 	}
 	public int getGamerID() {
 		return gamerID;

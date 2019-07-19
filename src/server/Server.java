@@ -15,6 +15,7 @@ import messageHandler.ServerMessage;
 
 public class Server extends Thread {
 	Stack <ServerMessage> serverMessages = new Stack <ServerMessage>();
+	Game game = new Game();
 	ServerSocket serverSocket;
 	int port;
 	Logger logger = Logger.getLogger();
@@ -24,9 +25,13 @@ public class Server extends Thread {
 		this.port = port;
 	}
 	
+	public void startGame() {
+		game.start();
+		logger.debug("started in startGame()");
+	}
+	
 	public void run() {
 		System.out.println("server started");
-		Game game = new Game();
 		try {
 			serverSocket = new ServerSocket(port);
 			
@@ -35,7 +40,6 @@ public class Server extends Thread {
 				Socket socket = serverSocket.accept();
 				
 				Scanner scanner = new Scanner(socket.getInputStream());
-				
 //				String userName = scanner.next();
 //				logger.debug(userName);
 				Service newService = 

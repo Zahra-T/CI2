@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Logger.Logger;
 import game.asset.Asset;
 import game.asset.Bomb;
 
@@ -10,7 +11,10 @@ public class Game {
 	ArrayList<Gamer> gamers = new ArrayList<Gamer>();
 	ArrayList<Rocket> rockets = new ArrayList<Rocket>();
 	ArrayList<Asset> assets = new ArrayList<Asset>();
+	Logger logger = Logger.getLogger();
 	boolean running = false;
+	
+	
 	
 	public void throwBomb(int gamerID, Location firstPlace) {
 		synchronized(assets) {
@@ -57,6 +61,7 @@ public class Game {
 	
 	public void setLocation(int gamerID, Location location) {
 		getRocket(gamerID).setLocation(location);
+		
 	}
 	
 	public Gamer getGamer(int gamerID) {
@@ -102,6 +107,8 @@ public class Game {
 	public ArrayList<Asset> getAssets(){
 		return assets;
 	}
+	
+	
 	
 	
 	

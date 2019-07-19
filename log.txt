@@ -1,18 +1,3 @@
-DEBUG: Mon Jul 15 14:13:07 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:07 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:07 IRDT 2019: mouse clicked
-DEBUG: Mon Jul 15 14:13:07 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:08 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:08 IRDT 2019: mouse clicked
-DEBUG: Mon Jul 15 14:13:08 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:08 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:08 IRDT 2019: mouse clicked
-DEBUG: Mon Jul 15 14:13:55 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:55 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:55 IRDT 2019: mouse clicked
-DEBUG: Mon Jul 15 14:13:55 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:55 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:55 IRDT 2019: mouse clicked
-DEBUG: Mon Jul 15 14:13:56 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:56 IRDT 2019: message added
-DEBUG: Mon Jul 15 14:13:56 IRDT 2019: mouse clicked
+DEBUG: Fri Jul 19 10:04:56 IRDT 2019: background added
+DEBUG: Fri Jul 19 10:04:56 IRDT 2019: null
+DEBUG: Fri Jul 19 10:04:56 IRDT 2019: {}

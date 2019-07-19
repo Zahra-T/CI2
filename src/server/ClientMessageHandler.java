@@ -2,6 +2,7 @@ package server;
 
 import java.util.Stack;
 
+import Logger.Logger;
 import game.Game;
 import game.Gamer;
 import messageHandler.ClientMessage;
@@ -10,6 +11,7 @@ public class ClientMessageHandler extends Thread{
 	Game game;
 	int gamerID;
 	Stack<ClientMessage> clientMessages = new Stack<ClientMessage>();
+	Logger logger = Logger.getLogger();
 
 	public ClientMessageHandler(Game game, int gamerID) {
 		this.game = game;
@@ -24,6 +26,7 @@ public class ClientMessageHandler extends Thread{
 					while(!clientMessages.isEmpty()) {
 						ClientMessage message = clientMessages.pop();
 						handleMessage(message);
+						
 					}
 				}
 			}
@@ -35,6 +38,11 @@ public class ClientMessageHandler extends Thread{
 			}
 		}
 
+	}
+	public void addMessages(Stack<ClientMessage> messages) {
+		synchronized(messages) {
+			clientMessages.addAll(messages);
+		}
 	}
 
 	private synchronized void handleMessage(ClientMessage message) {
@@ -68,7 +76,7 @@ public class ClientMessageHandler extends Thread{
 		}
 
 	}
-	
+
 	public Stack<ClientMessage> getMessages(){
 		return clientMessages;
 	}

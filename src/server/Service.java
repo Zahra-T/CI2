@@ -23,72 +23,67 @@ import messageHandler.ServerMessage;
 import game.Game;
 import game.Gamer;
 import game.Rocket;
+import game.asset.Asset;
 
 public class Service extends Thread{
 	int ID;
+	ServerReceiver receiver;
+	ServerSender sender;
+	
 	InputStream inputStream;
 	OutputStream outputStream;
-
-	Game game = new Game();
-	ClientMessageHandler clientMessageHandler;
-	ServerMessageHandler serverMessageHandler;
+	Game game; // a common class between services;
 	Logger logger = Logger.getLogger();
 	private transient Gson gson = new Gson();
 
 	public Service(Game game, int gamerID, String userName, InputStream inputStream, OutputStream outputStream) {
-		this.ID = gamerID;
+		this.ID = gamerID; 
 		this.inputStream = new BufferedInputStream(inputStream);
 		this.outputStream = new BufferedOutputStream(outputStream);
-
-		initialize(ID, userName);
+		this.game = game;
+		initialize(userName);
 	}
 
-	void initialize(int gamerID, String userName) {
+	void initialize(String userName) {
 		logger.debug(userName);
-		Gamer gamer = new Gamer(gamerID, userName);
-		Rocket rocket = new Rocket(game.getRocketsSize(), gamerID);
-		clientMessageHandler = new ClientMessageHandler(game, gamerID);
-		serverMessageHandler = new ServerMessageHandler(game);
+		Gamer gamer = new Gamer(ID, userName);
+		Rocket rocket = new Rocket(game.getRocketsSize(), ID);
 		game.addGamer(gamer);
 		game.addRocket(rocket);
-		clientMessageHandler.start();
 
+		
 	}
-
-	@Override
+	
+	@Override 
 	public void run() {
-		while(true) {
-			
-			Scanner scanner = new Scanner(inputStream);
-			PrintStream printer = new PrintStream(outputStream);
-
-			String serverMessage = gson.toJson(serverMessageHandler.getMessages());
-			printer.print(serverMessage);
-			printer.flush();
-			
-			logger.debug("service: "+scanner.hasNext());
-			
-//			while(scanner.hasNext()) {
-//				String message = scanner.nextLine();
-//				logger.debug("in service loop:"+message);
-//				Stack<ClientMessage> messages = gson.fromJson(message, new TypeToken<Stack<ServerMessage>>() {}.getType());
-//				synchronized(clientMessageHandler.getMessages()) {
-//					clientMessageHandler.getMessages().addAll(messages);
-//
-//				}
-//			}
-			scanner.close();
-
-			try {
-				Thread.sleep(30);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-
-
-		}
+		receiver = new ServerReceiver(inputStream, new ClientMessageHandler(game, ID));
+		receiver.start();
+		sender = new ServerSender(outputStream, this);
+		sender.start();
+		
 	}
+	
+	public Stack<ServerMessage> getServerMessages() {
+		
+		Stack<ServerMessage> serverMessages = new Stack<ServerMessage>();
+				synchronized(game.getRockets()) {
+					for(Rocket rocket : game.getRockets()) {
+						serverMessages.add(new ServerMessage(rocket.getType(), rocket.getLocation()));
+					}
+				}
+
+				synchronized(game.getAssets()) {
+					for(Asset asset : game.getAssets()) {
+						serverMessages.add(new ServerMessage(asset.getType(), asset.getLocation()));
+					}
+				}
+
+				
+				return serverMessages;                                                                                               
+	}
+	
+	
+
 
 
 }
