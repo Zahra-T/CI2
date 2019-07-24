@@ -22,5 +22,6 @@ public enum ObjectType{
 	userPanel,
 	menuePanel,
 	background,
-	startPanel;
+	startPanel,
+	serverUserPanel;
 }

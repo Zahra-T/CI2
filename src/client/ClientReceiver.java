@@ -16,8 +16,10 @@ import com.google.gson.reflect.TypeToken;
 
 import Logger.Logger;
 import messageHandler.ClientMessage;
+import messageHandler.Pair;
+import messageHandler.PaintMessage;
+import messageHandler.ServerMessageType;
 import messageHandler.ServerMessage;
-
 public class ClientReceiver extends Thread{
 
 	InputStream inputStream;
@@ -41,10 +43,18 @@ public class ClientReceiver extends Thread{
 		while(true) {
 
 			if(scanner.hasNext()) {
-				String message = scanner.nextLine();
-
-				Stack<ServerMessage> messages = gson.fromJson(message, new TypeToken<Stack<ServerMessage>>() {}.getType());
-				client.paint(messages);
+				String messageString = scanner.nextLine();
+				ServerMessage message = gson.fromJson(messageString, new TypeToken<ServerMessage>(){}.getType());
+				switch(message.getType()) {
+				case PAINT:{
+					client.addPaintMessage(message.getPaintMessage());
+					break;
+				}
+				case ORDER:{
+					client.addOrderMessage(message.getOrderMessage());
+					break;
+				}
+				}
 			}
 
 			try {

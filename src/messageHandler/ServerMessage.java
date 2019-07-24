@@ -1,29 +1,34 @@
 package messageHandler;
 
-import com.google.gson.Gson;
-
-import game.Location;
+import java.util.Stack;
 
 public class ServerMessage {
-	ObjectType objectType;
-	Location location;
-	public ServerMessage() {};
-	public ServerMessage(ObjectType objectType, Location location) {
-		this.objectType = objectType;
-		this.location = location;
+	ServerMessageType type;
+	Stack<PaintMessage> paintMessages;
+	OrderMessage orderMessage;
+	
+	public ServerMessage() {}
+	
+	public ServerMessage(ServerMessageType type, Stack<PaintMessage> paintMessages) {
+		this.type = type;
+		this.paintMessages = paintMessages;
 	}
 	
-	public ObjectType getType() {
-		return objectType;
+	public ServerMessage(ServerMessageType type, OrderMessage orderMessage) {
+		this.type = type;
+		this.orderMessage = orderMessage;
 	}
 	
-	public Location getLocation() {
-		return location;
+	public ServerMessageType getType() {
+		return type;
 	}
 	
-	@Override
-	public String toString() {
-		return (new Gson()).toJson(this);
+	public Stack<PaintMessage> getPaintMessage(){
+		return paintMessages;
+	}
+	
+	public OrderMessage getOrderMessage() {
+		return orderMessage;
 	}
 
 }

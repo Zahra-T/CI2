@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import Logger.Logger;
-import messageHandler.ServerMessage;
+import messageHandler.PaintMessage;
 
 public class ServerReceiver extends Thread{
 	InputStream inputStream;
@@ -27,7 +27,6 @@ public class ServerReceiver extends Thread{
 		
 		Scanner scanner = new Scanner(inputStream);
 		Gson gson = new Gson();
-
 		while(true) {
 			if(scanner.hasNext()) {
 				String message = scanner.nextLine();

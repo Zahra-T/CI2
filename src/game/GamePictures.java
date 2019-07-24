@@ -79,6 +79,7 @@ public class GamePictures {
 
 		pictures.put(ObjectType.menuePanel, loadJPGImage("menuPanel"));
 
+		pictures.put(ObjectType.serverUserPanel, loadPNGImage("ServerUserPanel"));
 
 
 	}

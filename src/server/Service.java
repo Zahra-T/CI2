@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -19,17 +20,21 @@ import com.google.gson.reflect.TypeToken;
 
 import Logger.Logger;
 import messageHandler.ClientMessage;
+import messageHandler.OrderMessage;
+import messageHandler.OrderType;
+import messageHandler.PaintMessage;
 import messageHandler.ServerMessage;
+import messageHandler.ServerMessageType;
 import game.Game;
 import game.Gamer;
 import game.Rocket;
 import game.asset.Asset;
-
-public class Service extends Thread{
+import game.Triple;
+public class Service{
 	int ID;
 	ServerReceiver receiver;
 	ServerSender sender;
-	
+	ClientMessageHandler messageHandler;
 	InputStream inputStream;
 	OutputStream outputStream;
 	Game game; // a common class between services;
@@ -45,36 +50,40 @@ public class Service extends Thread{
 	}
 
 	void initialize(String userName) {
+		receiver = new ServerReceiver(inputStream, new ClientMessageHandler(game, ID, this));
+		sender = new ServerSender(outputStream, this);
+		messageHandler = new ClientMessageHandler(game, ID, this);
 		logger.debug(userName);
 		Gamer gamer = new Gamer(ID, userName);
 		Rocket rocket = new Rocket(game.getRocketsSize(), ID);
 		game.addGamer(gamer);
 		game.addRocket(rocket);
-
-		
 	}
 	
-	@Override 
-	public void run() {
-		receiver = new ServerReceiver(inputStream, new ClientMessageHandler(game, ID));
+	public void start() {
 		receiver.start();
-		sender = new ServerSender(outputStream, this);
 		sender.start();
-		
+		messageHandler.start();
 	}
 	
-	public Stack<ServerMessage> getServerMessages() {
+	public void stop() {
+		receiver.stop();
+		sender.stop();
+		messageHandler.stop();
+	}
+	
+	public Stack<PaintMessage> getServerMessages() {
 		
-		Stack<ServerMessage> serverMessages = new Stack<ServerMessage>();
+		Stack<PaintMessage> serverMessages = new Stack<PaintMessage>();
 				synchronized(game.getRockets()) {
 					for(Rocket rocket : game.getRockets()) {
-						serverMessages.add(new ServerMessage(rocket.getType(), rocket.getLocation()));
+						serverMessages.add(new PaintMessage(rocket.getType(), rocket.getLocation()));
 					}
 				}
 
 				synchronized(game.getAssets()) {
 					for(Asset asset : game.getAssets()) {
-						serverMessages.add(new ServerMessage(asset.getType(), asset.getLocation()));
+						serverMessages.add(new PaintMessage(asset.getType(), asset.getLocation()));
 					}
 				}
 
@@ -82,7 +91,10 @@ public class Service extends Thread{
 				return serverMessages;                                                                                               
 	}
 	
-	
+	public void sendGameInfo() {
+		Triple<ArrayList<Gamer>, Integer, Integer> info = game.getInfo();
+		sender.addOrderMessage(new ServerMessage(ServerMessageType.ORDER, new OrderMessage(OrderType.GameInfo, info)));
+	}
 
 
 

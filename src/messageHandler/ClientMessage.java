@@ -16,6 +16,10 @@ public class ClientMessage{
 		this.location = location;
 	}
 	
+	public ClientMessage(ClientMessageType type) {
+		this.messageType = type;
+	}
+	
 	public ClientMessage(ClientMessageType messageType, double x, double y){
 		this.messageType = messageType;
 		this.location = new Location(x, y);

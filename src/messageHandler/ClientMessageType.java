@@ -8,5 +8,6 @@ public enum ClientMessageType {
 	mouseDragged,
 	mouseMoved,
 	ESCAPE, 
+	GameInfo,
 
 }

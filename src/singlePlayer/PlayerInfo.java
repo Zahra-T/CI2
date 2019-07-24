@@ -9,6 +9,8 @@ public class PlayerInfo {
 	int coin = 0;
 	int score = 0;
 	int level = 1;
+	int wave = 1;
+	int time = 0;
 	Location location;
 	boolean choosed;
 //	rocketType rocketType;
@@ -30,4 +32,17 @@ public class PlayerInfo {
 		choosed = b;
 	}
 	
+	public int getLevel() {
+		return level;
+	}
+	
+	public int getWave() {
+		return wave;
+	}
+	public void setLevel(int level) {
+		this.level = level;
+	}
+	public void setWave(int wave) {
+		this.wave = wave;
+	}
 }

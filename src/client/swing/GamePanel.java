@@ -22,10 +22,10 @@ import game.Location;
 import messageHandler.ClientMessage;
 import messageHandler.ClientMessageType;
 import messageHandler.ObjectType;
-import messageHandler.ServerMessage;
+import messageHandler.PaintMessage;
 
 public class GamePanel extends JPanel{
-	Stack<ServerMessage> shapes = new Stack<ServerMessage>();
+	Stack<PaintMessage> shapes = new Stack<PaintMessage>();
 	GamePictures gamePictures = GamePictures.getInstance();
 	Client client;
 	Logger logger = Logger.getLogger();
@@ -44,7 +44,7 @@ public class GamePanel extends JPanel{
 		
 	}
 	
-	public void paint(Stack<ServerMessage> shapes){
+	public void paint(Stack<PaintMessage> shapes){
 		
 		synchronized(shapes) {
 			this.shapes = shapes;
@@ -60,7 +60,7 @@ public class GamePanel extends JPanel{
 		super.paintComponent(g);
 		background.paint(g);
 		synchronized(shapes) {
-			for(ServerMessage shape : shapes) {
+			for(PaintMessage shape : shapes) {
 				BufferedImage bufferedImage = (BufferedImage) gamePictures.get(shape.getType());
 				Location location = shape.getLocation();
 				g.drawImage(bufferedImage, (int)(location.x - bufferedImage.getWidth()/2), (int)(location.y - bufferedImage.getHeight()/2) , null);
@@ -82,13 +82,13 @@ class myMouseMotionListener implements MouseMotionListener{
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			if(client.isMoving()) {
-				client.addMessage(new ClientMessage(ClientMessageType.mouseDragged, e.getX(), e.getY()));
+				client.addClientMessage(new ClientMessage(ClientMessageType.mouseDragged, e.getX(), e.getY()));
 			}
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			if(client.isMoving()) {
-				client.addMessage(new ClientMessage(ClientMessageType.mouseMoved, e.getX(), e.getY()));
+				client.addClientMessage(new ClientMessage(ClientMessageType.mouseMoved, e.getX(), e.getY()));
 			}
 		}
 }
@@ -106,7 +106,7 @@ class myMouseListener implements MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		if (e.getModifiers() == MouseEvent.BUTTON3_MASK)
 		{
-				client.addMessage(new ClientMessage(ClientMessageType.rightClick, null));
+				client.addClientMessage(new ClientMessage(ClientMessageType.rightClick, null));
 		
 		}
 	}
@@ -117,7 +117,7 @@ class myMouseListener implements MouseListener{
 
 		int modifiers = e.getModifiers();
 		if ((modifiers & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-			client.addMessage(new ClientMessage(ClientMessageType.mousePressed, null));
+			client.addClientMessage(new ClientMessage(ClientMessageType.mousePressed, null));
 
 		}
 
@@ -126,7 +126,7 @@ class myMouseListener implements MouseListener{
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		client.addMessage(new ClientMessage(ClientMessageType.mouseReleased, null));
+		client.addClientMessage(new ClientMessage(ClientMessageType.mouseReleased, null));
 	}
 
 	@Override

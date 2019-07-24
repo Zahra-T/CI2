@@ -2,19 +2,28 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 import Logger.Logger;
 import game.asset.Asset;
 import game.asset.Bomb;
+import game.enemy.Enemy;
+import game.levelHandler.LevelHandler;
 
 public class Game {
 	ArrayList<Gamer> gamers = new ArrayList<Gamer>();
 	ArrayList<Rocket> rockets = new ArrayList<Rocket>();
 	ArrayList<Asset> assets = new ArrayList<Asset>();
+	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	LevelHandler levelHandler; // single player or multiplayer level handler
+	
 	Logger logger = Logger.getLogger();
 	boolean running = false;
 	
-	
+	public Game(LevelHandler levelHandler) {
+		this.levelHandler = levelHandler;
+		addGamer(new Gamer(2,"zahra"));
+	}
 	
 	public void throwBomb(int gamerID, Location firstPlace) {
 		synchronized(assets) {
@@ -43,7 +52,12 @@ public class Game {
 		}
 	}
 	
+	public boolean existEnemy() {
+		return (enemies.size() > 0);
+	}
+	
 	public void start() {
+		levelHandler.start();
 		running = true;
 	}
 	
@@ -53,6 +67,10 @@ public class Game {
 	
 	public boolean running() {
 		return running;
+	}
+	
+	public void setRunning(boolean running) {
+		this.running = running;
 	}
 	
 	public void setMousePressed(int gamerID, boolean mousePressed) {
@@ -86,6 +104,8 @@ public class Game {
 		return null;
 	}
 	
+
+	
 	public int getRocketsSize() {
 		return rockets.size();
 	}
@@ -94,6 +114,11 @@ public class Game {
 		synchronized(gamers) {
 			gamers.add(gamer);
 		}
+	}
+	
+	public Triple getInfo() {
+		Triple<ArrayList<Gamer>, Integer, Integer> info = new Triple<ArrayList<Gamer>, Integer, Integer>(gamers, getLevel(), getWave());
+		return info;
 	}
 	
 	public void addRocket(Rocket rocket) {
@@ -108,6 +133,23 @@ public class Game {
 		return assets;
 	}
 	
+	public int getLevel() {
+		return levelHandler.getLevel();
+	}
+	
+	public int getWave() {
+		return levelHandler.getWave();
+	}
+	
+	public void setLevel(int level) { 
+		levelHandler.setLevel(level);
+	}
+	
+	public void setWave(int wave) {
+		levelHandler.setWave(wave);
+	}
+	
+
 	
 	
 	

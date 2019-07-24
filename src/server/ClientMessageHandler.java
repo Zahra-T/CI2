@@ -9,26 +9,26 @@ import messageHandler.ClientMessage;
 
 public class ClientMessageHandler extends Thread{
 	Game game;
+	Service service;
 	int gamerID;
 	Stack<ClientMessage> clientMessages = new Stack<ClientMessage>();
 	Logger logger = Logger.getLogger();
 
-	public ClientMessageHandler(Game game, int gamerID) {
+	public ClientMessageHandler(Game game, int gamerID, Service service) {
 		this.game = game;
 		this.gamerID = gamerID;
+		this.service = service;
 	}
 
 	@Override 
 	public void run() {
 		while(true) {
 			synchronized(clientMessages) {
-				if(game.running()) {
 					while(!clientMessages.isEmpty()) {
 						ClientMessage message = clientMessages.pop();
 						handleMessage(message);
 						
 					}
-				}
 			}
 
 			try {
@@ -71,6 +71,9 @@ public class ClientMessageHandler extends Thread{
 		case ESCAPE:{
 			game.pause();
 			break;
+		}
+		case GameInfo:{
+			service.sendGameInfo();
 		}
 
 		}
